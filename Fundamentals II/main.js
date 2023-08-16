@@ -106,7 +106,17 @@ const dallas = {
     firstName: 'Dallas',
     lastName: 'McGroarty',
     age: 28,
-    friends: ['john','timmy','steven']
+    birthYear: 1995,
+    friends: ['john','timmy','steven'],
+    hasDriverLicense: true,
+
+    calcAge3: function(birthYear) {
+        return 2023 - birthYear;
+    },
+
+    calcAge4: function() {
+        return 2023 - this.birthYear;
+    }
 }
 
 console.log(dallas);
@@ -120,3 +130,53 @@ console.log(dallas['first' + nameKey]);
 dallas.location = 'US';
 dallas['twitter'] = '@dallasmcg';
 console.log(dallas);
+
+console.log(dallas.calcAge3(1995));
+console.log(dallas.calcAge4());
+
+/**
+ * Loops
+ */
+
+const dallas2 = [
+    'dallas',
+    'mcgroarty',
+    [1,2,3],
+    28
+]
+
+for (let rep = 1; rep <= 10; rep++) {
+    //console.log(rep);
+}
+
+for (let i = 0; i < dallas2.length; i++) {
+    console.log(dallas2[i]);
+}
+
+// for of
+// for (let elem of dallas2) {
+//     console.log(elem);
+// }
+
+// reverse loop with inner loop
+for (let i = dallas2.length - 1; i >= 0; i--) {
+    console.log(dallas2[i]);
+
+    for (let i = 1; i < 6; i++) {
+        console.log(i);
+    }
+}
+
+// while loop
+let rep = 1
+while (rep <= 10) {
+    console.log(`rep ${rep}`);
+    rep++
+}
+
+let dice = Math.trunc(Math.random() * 6) + 1;
+
+while (dice !== 6) {
+    console.log(dice);
+    dice = Math.trunc(Math.random() * 6) + 1;
+}
