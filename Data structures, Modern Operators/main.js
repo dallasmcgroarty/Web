@@ -466,4 +466,177 @@ console.log(obj1);
 
 /**
  * Sets
+ * - cannot have duplicates
+ * - accepts any iterable
+ * - no indexes
+ * - should not be used if a value is needed from the set
+ * - use to check if elem is in the set, or to get size of unique elements
+ * - use arrays if you want to manipulate the data, have duplicates, etc ...
  */
+
+const ordersSet = new Set(['Pasta','Pizza','Pizza','Risotto','Pasta','Pizza']);
+
+console.log(ordersSet);
+
+// set with a string
+console.log(new Set('Dallas'));
+
+// get set size
+console.log(ordersSet.size);
+
+// check if an element is in the set
+console.log(ordersSet.has('Pizza'));
+console.log(ordersSet.has('Bread'));
+
+// add to a set, duplicates will not be added
+ordersSet.add('Garlic Bread');
+ordersSet.add('Garlic Bread');
+
+// delete element from set
+ordersSet.delete('Risotto');
+
+console.log(ordersSet);
+
+for (const order of ordersSet) {
+    console.log(order);
+}
+
+// Example
+const staff = ['Waiter', 'Chef', 'Waiter', 'Manager', 'Chef', 'Waiter'];
+
+// use spread to unpack set and get array of only unique elements
+const staffUnique = [...new Set(staff)];
+console.log(staffUnique);
+
+// get unique elements size
+console.log(new Set(staff).size);
+
+// count unique letters in a string
+console.log(new Set('Dallas').size);
+
+/**
+ * Maps
+ * - map values to keys
+ */
+
+// create map
+const rest3 = new Map();
+
+// add element to map, accepts a key value pair
+rest3.set('name', 'Classico Italiano');
+rest3.set(1, 'Firenze, Italy');
+
+// set also returns the map
+console.log(rest3.set(2, 'Lisbon, Portugal'));
+
+// allows chaining sets because it returns the map
+rest3.set('categories', ['Italian', 'Pizzaria', 'Vegetarian', 'Organic']).set('open', 11).set('close', 23).set(true, 'We are open').set(false, 'We are closed');
+
+// get element from map by key
+console.log(rest3.get('name'));
+console.log(rest3.get(true));
+console.log(rest3.get(1));
+
+const time = 21;
+console.log(rest3.get(time > rest3.get('open') && time < rest3.get('close')));
+
+// check if key exists
+console.log(rest3.has('categories'));
+
+// delete key, value pair
+rest3.delete(2);
+console.log(rest3);
+
+// get map size
+console.log(rest3.size);
+
+// get all values from map
+console.log(rest3.values());
+
+// get all keys from map
+console.log(rest3.keys());
+
+// clear the map
+//rest3.clear();
+
+const question = new Map([
+    ['question', 'What is the best programming language?'],
+    [1, 'C'],
+    [2, 'Java'],
+    [3, 'JavaScript'],
+    ['Correct', 3],
+    [true, 'Correct'],
+    [false, 'Wrong!']
+]);
+console.log(question);
+
+// convert object to map example
+const hoursMap = new Map(Object.entries(openingHours));
+console.log(hoursMap);
+
+// example question game using map
+console.log(question.get('question'));
+for (const [key, value] of question) {
+    if (typeof key === 'number') console.log(`Answer ${key}: ${value}`);
+}
+
+//const answer = Number(prompt('Your answer'));
+
+//console.log(question.get(question.get('Correct') === answer));
+
+// convert map to array
+console.log([...question]);
+
+///////////////////////////////////////
+// Coding Challenge #3
+
+/* 
+Let's continue with our football betting app! This time, we have a map with a log of the events that happened during the game. 
+The values are the events themselves, and the keys are the minutes in which each event happened (a football game has 90 minutes plus some extra time).
+
+1. Create an array 'events' of the different game events that happened (no duplicates)
+2. After the game has finished, is was found that the yellow card from minute 64 was unfair. So remove this event from the game events log.
+3. Print the following string to the console: "An event happened, on average, every 9 minutes" (keep in mind that a game has 90 minutes)
+4. Loop over the events and log them to the console, marking whether it's in the first half or second half (after 45 min) of the game, like this:
+      [FIRST HALF] 17: ⚽️ GOAL
+
+GOOD LUCK 😀
+*/
+
+const gameEvents = new Map([
+    [17, '⚽️ GOAL'],
+    [36, '🔁 Substitution'],
+    [47, '⚽️ GOAL'],
+    [61, '🔁 Substitution'],
+    [64, '🔶 Yellow card'],
+    [69, '🔴 Red card'],
+    [70, '🔁 Substitution'],
+    [72, '🔁 Substitution'],
+    [76, '⚽️ GOAL'],
+    [80, '⚽️ GOAL'],
+    [92, '🔶 Yellow card'],
+]);
+
+// 1.
+const events = [...new Set(gameEvents.values())];
+console.log(events);
+
+// 2.
+gameEvents.delete(64);
+
+// 3.
+console.log(
+    `An event happened, on average, every ${90 / gameEvents.size} minutes`
+  );
+
+// 4.
+for (const [key,value] of gameEvents) {
+    let half = '';
+    if (key <= 45) {
+        half = '[FIRST HALF]';
+    } else {
+        half = '[SECOND HALF]';
+    }
+    
+    console.log(`${half} ${key}: ${value}`);
+}
