@@ -261,3 +261,229 @@ function calcAverageHumanAge2(ages) {
 }
 
 console.log(calcAverageHumanAge2([5, 2, 4, 1, 15, 8, 3]));
+
+/**
+ * The find method
+ */
+
+// Data
+const account1 = {
+    owner: 'Dallas McGroarty',
+    movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
+    interestRate: 1.2, // %
+    pin: 1111,
+  };
+  
+  const account2 = {
+    owner: 'Jessica Davis',
+    movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
+    interestRate: 1.5,
+    pin: 2222,
+  };
+  
+  const account3 = {
+    owner: 'Steven Thomas Williams',
+    movements: [200, -200, 340, -300, -20, 50, 400, -460],
+    interestRate: 0.7,
+    pin: 3333,
+  };
+  
+  const account4 = {
+    owner: 'Sarah Smith',
+    movements: [430, 1000, 700, 50, 90],
+    interestRate: 1,
+    pin: 4444,
+  };
+  
+const accounts = [account1, account2, account3, account4];
+
+console.log(movements.find(move => move < 0));
+
+const account = accounts.find(acc => acc.owner == 'Jessica Davis');
+console.log(account);
+
+/**
+ * findIndex method
+ */
+
+const index = accounts.findIndex(acc => acc.pin === 2222);
+console.log(index);
+console.log(accounts[index]);
+
+/**
+ * Some method
+ */
+
+// returns for any element
+const anyDeposits = movements.some(move => move > 1500);
+console.log(anyDeposits);
+
+/**
+ * Every method
+ * - only returns true if all elements satisfy the condition
+ */
+console.log(account4.movements.every(move => move > 0));
+
+// separate callback
+const deposit = move => move > 0;
+console.log(movements.some(deposit));
+console.log(movements.every(deposit));
+console.log(movements.filter(deposit));
+
+/**
+ * flat and flatmap
+ */
+
+const arr4 = [[1,2,3],[4,5,6],7,8];
+
+// flat - only goes one level deep by default
+console.log(arr4.flat());
+
+// use depth parameter to flatten deeper arrays
+const arrDeep = [[[1,2],3],[4,[5,6]],7,8]
+console.log(arrDeep.flat(2));
+
+// can extract object properties with map
+const accountMovements = accounts.map(acc => acc.movements);
+console.log(accountMovements);
+const allMovements = accountMovements.flat()
+console.log(allMovements);
+const overallBalance = allMovements.reduce((acc,val) => acc + val, 0);
+console.log(overallBalance);
+
+// chained
+const overallBalance2 = accounts.map(acc => acc.movements).flat().reduce((acc, val) => acc + val);
+console.log(overallBalance2);
+
+// flatmap - only goes one level deep
+const overallBalance3 = accounts.flatMap(acc => acc.movements).reduce((acc, val) => acc + val);
+console.log(overallBalance3);
+
+/** 
+ * sorting arrays
+ */
+
+// sort - sorts the array, mutates the array it is called on
+const owners = ['Dallas','Bob','Tom','Billy'];
+
+// by default sorts by string
+console.log(owners.sort());
+console.log(owners);
+
+// Numbers
+console.log(movements);
+console.log(movements.sort());
+
+// pass in function argument to compare by
+// return < 0, A, B
+// return > 0, B, A
+
+// ascending
+//movements.sort((a, b) => a - b);
+
+movements.sort((a, b) => {
+    if (a > b) {
+        return 1;
+    }
+
+    if (b > a) {
+        return -1;
+    }
+})
+
+console.log(movements);
+
+// descending
+movements.sort((a, b) => {
+    if (a > b) {
+        return -1;
+    }
+
+    if (b > a) {
+        return 1;
+    }
+})
+
+console.log(movements);
+
+/**
+ * more array methods
+ */
+
+// fill - fill array with some variable, can specify start and end indices
+const x = new Array(7);
+//x.fill(1)
+//x.fill(1, 3);
+x.fill(1, 3, 5);
+console.log(x);
+
+arr.fill(23, 2, 6);
+console.log(arr);
+
+// Array.from
+const y = Array.from({length: 7}, () => 1);
+console.log(y);
+
+const z = Array.from({length: 7}, (_, i) => i + 1);
+console.log(z);
+
+/**
+ * When to use which array method--
+ *
+ * To mutuate the original array:
+ *  - push, unshift, pop, shift, splice, reverse, sort, fill
+ * 
+ * To get a new array:
+ *  - map, filter, slice, concat, flat, flatMap
+ * 
+ * To get an array index:
+ *  - indexOf, findIndex
+ * 
+ * To get an array element:
+ *  - find
+ * 
+ * To check if an element exists:
+ *  - includes, some, every
+ * 
+ * To create a string from array
+ *  - join
+ * 
+ * To transform array into a value
+ *  - reduce
+ * 
+ * To loop array
+ *  - forEach, for of
+ */
+
+/**
+ * Array exercises
+ */
+
+// get all deposits
+const totals = accounts.map(acc => acc.movements).flat().filter(move => move > 0).reduce((acc, val) => acc + val);
+console.log(totals);
+
+// number of deposits of $1000+
+const depositsGT1000 = accounts.map(acc => acc.movements).flat().filter(move => move >= 1000).length;
+console.log(depositsGT1000);
+
+// object containing sum of deposits and of withdrawals
+const sums = accounts.map(acc => acc.movements).flat().reduce((sums, cur) => {
+    //cur > 0 ? sums.deposits += cur : sums.withdrawals += cur;
+    sums[cur > 0 ? 'deposits' : 'withdrawals'] += cur;
+    return sums;
+}, {deposits: 0, withdrawals: 0})
+
+console.log(sums);
+
+// title case
+const convertTitleCase = function(title) {
+    const expectations = ['a','an','the','but','or','on','in','with'];
+
+    return title.toLowerCase().split(' ').map(function(char, i) {
+        return char[0].toUpperCase() + char.slice(1);
+    }).join(' ');
+};  
+
+console.log(convertTitleCase('this is a nice title'));
+console.log(convertTitleCase('this is a longer NICER title'));
