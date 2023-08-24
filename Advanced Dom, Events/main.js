@@ -36,3 +36,23 @@ const button = document.querySelector('.btn-poll');
 button.addEventListener('click', function() {
     button.remove();
 })
+
+/**
+ * Event propagation
+ */
+const randomInt = (max, min) => Math.floor(Math.random() * (max - min) + 1) + min;
+
+const randomColor = () => `rgb(${randomInt(0, 255)},${randomInt(0, 255)},${randomInt(0, 255)})`;
+
+console.log(randomColor(0, 255));
+
+document.querySelector('.btn--close-cookie').addEventListener('click', function(e) {
+    this.style.backgroundColor = randomColor(0, 255);
+
+    // stop event from bubbling up
+    e.stopPropagation();
+});
+
+document.querySelector('.cookie-message').addEventListener('click', function(e) {
+    this.style.backgroundColor = randomColor(0, 255);
+});
