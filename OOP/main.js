@@ -243,6 +243,7 @@ console.log(newCar.speedUS);
 
 class PersonCl3 extends PersonCl {
     constructor(firstName, birthYear, course) {
+        // use super to construct parent portion
         super(firstName, birthYear);
         this.course = course;
     }
@@ -262,31 +263,95 @@ tom.me();
 
 
 class Account {
+    // public fields (instances)
+    locale = navigator.locale;
+
+    // private fields (instances)
+    #movements = [];
+    #pin;
+
     constructor(owner, currency, pin) {
         this.owner = owner;
         this.currency = currency;
-        this.pin = pin;
-        this.movements = [];
-        this.locale = navigator.locale;
+        this.#pin = pin;
+    }
+
+    // public methods
+    getMovements () {
+        return this.#movements;
     }
 
     deposit (value) {
-        this.movements.push(value);
+        this.#movements.push(value);
+        return this;
     }
 
     withdraw (value) {
         this.deposit(-value);
+        // return this to enable chaining methods
+        return this;
     }
 
     balance () {
-        return this.movements.reduce((acc, value) => acc += value);
+        return this.#movements.reduce((acc, value) => acc += value);
+    }
+
+    // private methods
+    #approveLoan(val) {
+        return true;
+    }
+
+    // static method (on the class itself, not instances)
+    static helper() {
+        console.log('Helper');
     }
 }
 
 const acc1 = new Account('Sean', 'USD', 2234);
-acc1.deposit(500)
-acc1.deposit(300)
-acc1.deposit(250)
-acc1.withdraw(100)
+acc1.deposit(500).deposit(300).deposit(250).withdraw(100);
 console.log(acc1.balance());
 console.log(acc1);
+console.log(acc1.getMovements());
+Account.helper();
+
+/* 
+1. Re-create challenge #3, but this time using ES6 classes: create an 'EVCl' child class of the 'CarCl' class
+2. Make the 'charge' property private;
+3. Implement the ability to chain the 'accelerate' and 'chargeBattery' methods of this class, and also update the 'brake' method in the 'CarCl' class. They experiment with chining!
+
+DATA CAR 1: 'Rivian' going at 120 km/h, with a charge of 23%
+
+GOOD LUCK 😀
+*/
+
+class EVCl extends CarCl {
+    #charge;
+
+    constructor(make,speed, charge) {
+        super(make,speed);
+        this.#charge = charge;
+    }
+
+    accelerate() {
+        super.accelerate();
+        return this;
+    }
+
+    brake () {
+        super.brake();
+        return this;
+    }
+
+    chargeBattery() {
+        this.#charge += 10;
+        return this;
+    }
+
+    currentStatus() {
+        console.log(`${this.make} going ${this.speed} with ${this.#charge}% battery`);
+        return this;
+    }
+}
+
+const ev = new EVCl('Rivian', 120, 23);
+ev.accelerate().accelerate().accelerate().brake().brake().currentStatus();
