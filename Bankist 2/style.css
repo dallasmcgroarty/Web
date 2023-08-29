@@ -380,7 +380,7 @@ h4 {
   position: relative;
 
   /* IN THE END */
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 .slide {
@@ -432,7 +432,7 @@ h4 {
 
 .dots {
   position: absolute;
-  bottom: 5%;
+  bottom: 0px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;

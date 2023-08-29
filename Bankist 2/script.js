@@ -193,6 +193,95 @@ const imageObserver = new IntersectionObserver(
 )
 
 imgTargets.forEach(img => {imageObserver.observe(img)});
+
+// slider
+const slides = document.querySelectorAll('.slide');
+const slider = document.querySelector('.slider');
+const btnLeft = document.querySelector('.slider__btn--left');
+const btnRight = document.querySelector('.slider__btn--right');
+const dotContainer = document.querySelector('.dots');
+let curSlide = 0;
+const maxSlide = slides.length;
+
+const createDots = function() {
+  slides.forEach(function(_,i) {
+    dotContainer.insertAdjacentHTML('beforeend', `<button class="dots__dot" data-slide="${i}"></button>`);
+  });
+}
+createDots();
+
+dotContainer.querySelector('.dots__dot').classList.add('dots__dot--active');
+
+slides.forEach((s,i) => s.style.transform = `translateX(${100 * i}%)`);
+
+const goToSlide = function(slide) {
+  slides.forEach((s,i) => s.style.transform = `translateX(${100 * (i - slide)}%)`);
+  setActiveDot(slide);
+};
+
+const nextSlide = function () {
+  curSlide += 1;
+
+  if (curSlide === maxSlide) {
+    curSlide = 0;
+  }
+
+  goToSlide(curSlide);
+};
+
+const prevSlide = function () {
+  if (curSlide === 0) {
+    curSlide = maxSlide - 1;
+  } else {
+    curSlide -= 1;
+  }
+
+  goToSlide(curSlide);
+}
+
+const checkPosEnd = function(dir) {
+  if (curSlide === maxSlide && dir == 'right') {
+    slides.forEach((s,i) => s.style.transform = `translateX(${100 * (i)}%)`);
+    curSlide = 0;
+    return true;
+  } else if (curSlide === 0 && dir == 'left') {
+    curSlide = 2;
+    slides.forEach((s,i) => s.style.transform = `translateX(${100 * (i - curSlide)}%)`);
+    return true;
+  }
+
+  return false;
+};
+
+btnRight.addEventListener('click', nextSlide);
+
+btnLeft.addEventListener('click', prevSlide);
+
+document.addEventListener('keydown', function(e) {
+  console.log(e.key);
+
+  if (e.key === 'ArrowRight') nextSlide();
+
+  if (e.key === 'ArrowLeft') prevSlide();
+});
+
+const setActiveDot = function(slide) {
+    dotContainer.querySelector('.dots__dot--active').classList.remove('dots__dot--active')
+
+    dotContainer.querySelector(`.dots__dot[data-slide="${slide}"]`).classList.add('dots__dot--active')
+};
+
+dotContainer.addEventListener('click', function(e) {
+  if (e.target.classList.contains('dots__dot')) {
+    const slideNum = Number(e.target.dataset.slide);
+
+    goToSlide(slideNum);
+    setActiveDot(slideNum);
+    curSlide = slideNum;
+
+  }
+});
+
 /**
  * inserting cookie
  */

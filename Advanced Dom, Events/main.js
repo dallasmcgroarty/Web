@@ -56,3 +56,14 @@ document.querySelector('.btn--close-cookie').addEventListener('click', function(
 document.querySelector('.cookie-message').addEventListener('click', function(e) {
     this.style.backgroundColor = randomColor(0, 255);
 });
+
+/**
+ * dom
+ */
+document.addEventListener('DOMContentLoaded', function(e) {
+    console.log('HTML parsed dom built', e)
+});
+
+window.addEventListener('load', function(e) {
+    console.log('Page fully loaded', e);
+});
