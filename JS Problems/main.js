@@ -305,12 +305,156 @@ steps(2);
 steps(3);
 steps(4);
 
+/**
+ * Pyramid 
+ * - write a function that accepts a positive number N. the function should console log a pyramid shape
+ * with N levels using the # character. make sure the pyramid has spaces on both the left and right hand sides.
+ * Ex n = 1
+ *  '#'
+ * n = 2
+ *  ' # '
+ *  '###'
+ * n = 3
+ *  '  #  '
+ *  ' ### '
+ *  '#####'
+ */
+console.log('--- pyramid ---');
+function pyramid(n) {
+    let mid = Math.floor((n * 2 - 1) / 2);
+
+    for (let row = 0; row < n; row++) {
+        let level = '';
+
+        for (let col = 0; col < n * 2 - 1; col++) {
+            if (col < mid - row || col > mid + row) {
+                level += '-';
+            } else {
+                level += '#';
+            }
+        }
+
+        console.log(level);
+    }
+}
+
+function pyramidRecursive(n, row=0, level='') {
+    if (row === n) {
+        return;
+    }
+
+    if (level.length === 2 * n-1) {
+        console.log(level);
+        return pyramidRecursive(n, row + 1);
+    }
+
+    let mid = Math.floor((n * 2 - 1) / 2);
+    let add;
+
+    if (level.length < mid - row || level.length > mid + row) {
+        add = '-';
+    } else {
+        add = '#'
+    }
+
+    return pyramidRecursive(n, row, level + add);
+
+}
+console.log('-pyramid recursive-');
+pyramidRecursive(3);
+
+console.log('-pyramid regular-');
+pyramid(1);
+pyramid(2);
+pyramid(3);
 
 
+/**
+ * Return vowels
+ * - write a function that returns the number of vowels used in a string. Vowels are the characters
+ *  a, e, i, o, u
+ */
+console.log('--- vowels ---');
+function vowels(str) {
+    const vowels = ['a','e','i','o','u'];
+    let num = 0;
+    for (let char of str.toLowerCase()) {
+        if (vowels.includes(char)) {
+            num += 1;
+        }
+    }
+
+    return num;
+}
+
+// regular expression version
+function vowels2(str) {
+    return str.match(/[aeiou]/gi) != null ? str.match(/[aeiou]/gi).length : 0;
+}
+
+console.log(vowels('Hi there!'));
+console.log(vowels('why do you ask?'));
+console.log(vowels('Why'));
 
 
+/**
+ * Matrix spiral
+ * - write a function that accepts an integer N and returns a NxN spiral matrix
+ * 
+ * notes:
+ *  - start top left [0][0], move right til end of row, move down til end of col, move left til end of row, move up til end of column, then repeat
+ *  - increment counter at each move
+ *  - after moving one whole row or col, increment or decrement the next row or col.
+ */
+console.log('--- sprial matrix ---')
+function matrix(n) {
+    let result = [];
 
+    for (let i = 0; i < n; i++) {
+        result.push([]);
+    }
 
+    let counter = 1;
+    let startCol = 0;
+    let endCol = n-1;
+    let startRow = 0;
+    let endRow = n-1;
+
+    while (startCol <= endCol && startRow <= endRow) {
+        // top row
+        for (let i = startCol; i <= endCol; i++) {
+            result[startRow][i] = counter;
+            counter++;
+        }
+        startRow++;
+
+        // right col
+        for (let i = startRow; i <= endRow; i++) {
+            result[i][endCol] = counter;
+            counter++;
+        }
+        endCol--;
+
+        // bottom row
+        for (let i = endCol; i >= startCol; i--) {
+            result[endRow][i] = counter;
+            counter++
+        }
+        endRow--;
+
+        // start col
+        for (let i = endRow; i >= startRow; i--) {
+            result[i][startCol] = counter;
+            counter++;
+        }
+        startCol++;
+    }
+
+    return result;
+}
+
+console.log(matrix(3));
+console.log(matrix(4));
 
 
 /**
@@ -357,6 +501,43 @@ q.remove();
 console.log(q.last());
 console.log(q.first());
 console.log(q.show());
+
+/**
+ *  Weave
+ * - implement weake function
+ * - weave receives to queues and combines them into a new third queue
+ * - only use add, remove and peek (or first method)
+ */
+console.log('--- queue weave ---');
+function weave(q1,q2) {
+    const returnQ = new Queue();
+
+    while (q1.first() || q2.first()) {
+        if (q1.first()) {
+            returnQ.add(q1.remove());
+        }
+        
+        if (q2.first()) {
+            returnQ.add(q2.remove());
+        }
+    }
+
+
+    return returnQ;
+}
+
+const testQ1 = new Queue();
+const testQ2 = new Queue();
+testQ1.add(1);
+testQ1.add(2);
+testQ2.add('hi');
+testQ2.add('there');
+testQ2.add('the');
+testQ2.add('te');
+
+console.log(weave(testQ1,testQ2));
+
+
 
 /**
  *  Stack
