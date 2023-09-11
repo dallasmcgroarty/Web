@@ -572,8 +572,8 @@ function mergeSort(arr) {
 
     const center = Math.floor(arr.length / 2);
 
-    left = arr.slice(0, center);
-    right = arr.slice(center);
+    let left = arr.slice(0, center);
+    let right = arr.slice(center);
 
     return merge(mergeSort(left), mergeSort(right));
     // return sorted array
