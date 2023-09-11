@@ -470,3 +470,127 @@ function matrix(n) {
 
 console.log(matrix(3));
 console.log(matrix(4));
+
+
+/**
+ * Create an 'eventing' library out of the Events class. The Events class should have methods 'on', 'trigger', and 'off'
+ */
+
+class Events {
+    #events
+
+    constructor() {
+        this.#events = {};
+    }
+
+    // register event handler
+    on(eventName, callback) {
+        if (this.#events[eventName]) {
+            this.#events[eventName].push(callback);
+        } else {
+            this.#events[eventName] = [callback];
+        }
+    }
+
+    // trigger all callbacks associated with given eventName
+    trigger(eventName) {
+        for (let event of this.#events[eventName]) {
+            event();
+        }
+    }
+
+    // remove all event handlers associated with eventName
+    off(eventName) {
+        delete this.#events[eventName];
+        //this.#events[eventName] = [];
+    }
+}
+
+const E = new Events();
+
+E.on('click', function() {
+    return 'Clickity click';
+})
+
+E.on('click', function() {
+    return 'another click event';
+})
+
+E.on('scroll', function() {
+    return 'scroll event';
+})
+
+E.trigger('click');
+
+/**
+ * Sorting!!
+ */
+
+function bubbleSort(arr) {
+    for (let i = 0; i < arr.length; i++) {
+        for (let j = 0; j < arr.length - i - 1; j++) {
+            if (arr[j] > arr[j+1]) {
+                // destructure array method
+                [arr[j], arr[j+1]] = [arr[j+1], arr[j]];
+
+                // temp method
+                // const lesser = arr[j+1];
+                // arr[j+1] = arr[j];
+                // arr[j] = lesser;
+            }
+        }
+    }
+    // return sorted array
+    return arr;
+}
+
+console.log('--- bubble sort ---', bubbleSort([3,-4,0,20,15,8,33]));
+
+function selectionSort(arr) {
+    for (let i = 0; i < arr.length; i++) {
+        let indexOfMin = i;
+        for (let j = i + 1; j < arr.length; j++) {
+            if (arr[j] < arr[indexOfMin]) {
+                indexOfMin = j;
+            }
+        }
+
+        if (i !== indexOfMin) {
+            [arr[i], arr[indexOfMin]] = [arr[indexOfMin], arr[i]];
+        }
+    }
+    // return sorted array
+    return arr;
+}
+
+console.log('--- selection sort ---', selectionSort([3,-4,0,20,15,8,33]));
+
+function mergeSort(arr) {
+    if (arr.length === 1) {
+        return arr;
+    }
+
+    const center = Math.floor(arr.length / 2);
+
+    left = arr.slice(0, center);
+    right = arr.slice(center);
+
+    return merge(mergeSort(left), mergeSort(right));
+    // return sorted array
+}
+
+function merge(left, right) {
+    const result = [];
+
+    while (left.length && right.length) {
+        if (left[0] < right[0]) {
+            result.push(left.shift());
+        } else {
+            result.push(right.shift());
+        }
+    }
+
+    return [...result, ...left, ...right];
+}
+
+console.log('--- merge sort ---', selectionSort([3,-4,0,20,15,8,33]));
