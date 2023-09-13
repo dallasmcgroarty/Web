@@ -40,3 +40,189 @@ function isPalindrome(x) {
     // }
     // return true;
 };
+
+/**
+ * You are given two integer arrays of equal length target and arr. In one step, you can select any non-empty subarray of arr and reverse it. 
+    You are allowed to make any number of steps.
+    Return true if you can make arr equal to target or false otherwise.
+
+ * @param {Array} array_a 
+ * @param {Array} array_b
+ * @returns {Boolean} 
+ */
+function areTheyEqual(array_a, array_b){
+    // Write your code here
+
+    array_a.sort()
+    array_b.sort()
+
+    if (array_a.join(',') == array_b.join(',')) {
+        return true;
+    }
+
+    return false;
+
+    // one line solution
+    return array_a.sort().join(',') == array_b.sort().join(',');
+}
+
+let aa = [1, 2, 3, 4];
+let bb = [1, 4, 3, 2];
+
+console.log(areTheyEqual(aa,bb));
+
+
+/**
+ * Contiguous subarrays
+ * You are given an array arr of N integers. For each index i, you are required to determine the number of contiguous subarrays that fulfill the following conditions:
+    - The value at index i must be the maximum element in the contiguous subarrays, and
+    - These contiguous subarrays must either start from or end on index i
+ * Output = An array where each index i contains an integer denoting the maximum number of contiguous subarrays of arr[i]
+ * @param {Array} arr 
+ */
+function countSubarrays(arr) {
+    let counts = [];
+
+    // loop through array
+    for (let i = 0; i < arr.length; i++) {
+        // at each element, count itself once as a subarray
+        let count = 1;
+
+        // look backwards in array add 1 to current subarrays if a value is less than arr[i], else stop
+        if (arr[i - 1]) {
+            let j = i - 1;
+            while (j >= 0 && arr[j] < arr[i]) {
+                count += 1;
+                j -= 1;
+            } 
+        }
+
+        // look forwards in array add 1 to current subarrays if a value is less than arr[i], else stop
+        if (arr[i + 1]) {
+            let k = i + 1;
+            while (k >= 0 && arr[k] < arr[i]) {
+                count += 1;
+                k += 1;
+            }
+        }
+
+        counts.push(count);
+    }
+
+    // return subarrays count array
+    return counts;
+}
+
+let a1 = [3, 4, 1, 6, 2];
+console.log(countSubarrays(a1));
+
+// helper function for rotationalCipher
+function rotating(num, factor, type) {
+    let lower;
+    let upper;
+    switch (type) {
+        case 'upper':
+            lower = 65;
+            upper = 90;
+            break;
+        case 'lower':
+            lower = 97;
+            upper = 122;
+            break;
+        case 'number':
+            lower = 48;
+            upper = 57;
+            break;
+        default:
+            break;
+    }
+
+    while (factor > 0) {
+        if (num == upper + 1) {
+            num = lower;
+        }
+
+        num += 1;
+        factor -= 1;
+    }
+
+    return num;
+}
+
+/**
+ * One simple way to encrypt a string is to "rotate" every alphanumeric character by a certain amount. 
+ * Rotating a character means replacing it with another character that is a certain number of steps away in normal alphabetic or numerical order.
+   For example, if the string "Zebra-493?" is rotated 3 places, the resulting string is "Cheud-726?". 
+    Every alphabetic character is replaced with the character 3 letters higher (wrapping around from Z to A), 
+    and every numeric character replaced with the character 3 digits higher (wrapping around from 9 to 0). Note that the non-alphanumeric characters remain unchanged.
+
+    Given a string and a rotation factor, return an encrypted string.
+
+ * @param {String} input 
+ * @param {Number} rotationFactor 
+ * @returns {String}
+ */
+function rotationalCipher(input, rotationFactor) {
+    const A = 65
+    const Z = 90
+    const a = 97
+    const z = 122
+    const ZERO = 48
+    const NINE = 57
+    
+    let output = '';
+
+    for (let char of input) {
+        let numChar = char.charCodeAt(0);
+        let converted;
+
+        if (numChar <= 90 && numChar >= 65) {
+            converted = (numChar + rotationFactor) > 90 ? rotating(numChar, rotationFactor, 'upper') : numChar + rotationFactor;
+            output += String.fromCharCode(converted);
+        } else if (numChar <= 122 && numChar >= 97) {
+            converted = (numChar + rotationFactor) > 122 ? rotating(numChar, rotationFactor, 'lower') : numChar + rotationFactor;
+            output += String.fromCharCode(converted);
+        } else if (numChar <= 57 && numChar >= 48) {
+            converted = (numChar + rotationFactor) > 57 ? rotating(numChar, rotationFactor, 'number'): numChar + rotationFactor;
+            output += String.fromCharCode(converted);
+        } else {
+            output += char;
+        }
+    }
+
+    return output;
+}
+
+
+let cypherIn = 'Zebra-493?';
+let cypherIn2 = 'abcdZXYzxy-999.@';
+console.log(rotationalCipher(cypherIn, 3));
+console.log(rotationalCipher(cypherIn2, 200));
+
+/**
+ * Given an array of integers nums, return the number of good pairs. 
+ *  A pair (i, j) is called good if nums[i] == nums[j] and i < j.
+ * 
+ * hint - sum formula = Count how many times each number appears. If a number appears n times, then n * (n – 1) // 2 good pairs can be made with this number.
+
+ * @param {Number[]} nums
+ * @return {Number}
+ */
+var numIdenticalPairs = function(nums) {
+    let freq = {};
+    let pairs = 0;
+
+    for (let num of nums) {
+        if (freq[num]) {
+            freq[num] += 1;
+        } else {
+            freq[num] = 1;
+        }
+    }
+
+    for (let num in freq) {
+        pairs += Math.floor(freq[num] * (freq[num] - 1) / 2);
+    }
+
+    return pairs;
+};
