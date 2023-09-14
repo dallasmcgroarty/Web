@@ -226,3 +226,39 @@ var numIdenticalPairs = function(nums) {
 
     return pairs;
 };
+
+
+/**
+ * Return the subset A, in increasing order where the sum of A's elements is greater than the sum of B's elements.
+ * If more than one subset exists, return the one with the maximal sum.
+ * 
+ * @param {Array} arr 
+ * @returns {Array}
+ */
+function subsetA(arr) {
+    // Write your code here
+    // sort array since order doesn't matter and we can get highest values from the end
+    // create 2 arrays A and B to compare, while A holds highest values 
+    arr.sort((a,b) => a - b);
+    let a = [];
+    let sumA = 0;
+    let sumArr = 0;
+    
+    for (let num of arr) {
+        sumArr += num;
+    }
+    
+    while (arr.length) {
+        let last = arr.pop();
+        a.unshift(last);
+        
+        sumArr = sumArr - last;
+        sumA += last;
+        
+        if (sumA > sumArr) {
+            return a;
+        }
+    }
+}
+
+console.log(subsetA([5,3,2,4,1,2,5,7,4,9,11]));
