@@ -64,6 +64,7 @@ loadCountries(['portugal', 'usa']);
  * fetch API
  * 
  * - promise - a container for a future value (container for an asynchronously delivered value)
+ * -
  */
 
 function getJSON (url, errorMsg = 'Something went wrong') {
@@ -109,6 +110,7 @@ fetchCountryData('germany')
 btn.addEventListener('click', function(e) {
     fetchCountryData('portugall');
 });
+
 
 ///////////////////////////////////////
 // Coding Challenge #1
