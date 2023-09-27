@@ -262,3 +262,31 @@ function subsetA(arr) {
 }
 
 console.log(subsetA([5,3,2,4,1,2,5,7,4,9,11]));
+
+/**
+ * Given a time in -hour AM/PM format, convert it to military (24-hour) time.
+
+    Note: - 12:00:00AM on a 12-hour clock is 00:00:00 on a 24-hour clock.
+    - 12:00:00PM on a 12-hour clock is 12:00:00 on a 24-hour clock.
+ */
+function toMilitary(s) {
+    // Write your code here
+    let time = s.split(':');
+    let timeOfDay = time[time.length-1].substring(2);
+    time[time.length-1] = time[time.length-1].substring(0,2);
+    let mTime = '';
+    
+    if (timeOfDay == 'PM' && Number(time[0]) == 12) {
+        mTime = time.join(':');
+    } else if (timeOfDay == 'AM' && Number(time[0]) == 12) {
+        time[0] = '00';
+        mTime = time.join(':');
+    } else if (timeOfDay == 'PM' && Number(time[0]) >= 1) {
+        time[0] = ''+(Number(time[0]) + 12);
+        mTime = time.join(':');
+    } else {
+        mTime = time.join(':');
+    }
+    console.log(mTime);
+    return mTime;
+}

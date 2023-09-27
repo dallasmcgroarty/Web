@@ -23,7 +23,6 @@ function palindrome(str) {
     for (var char of str) {
         reversed = char + reversed;
     }
-    
     if (str == reversed) {
         return true;
     } else {
