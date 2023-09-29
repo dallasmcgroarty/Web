@@ -108,7 +108,7 @@ function fetchCountryData(country) {
 fetchCountryData('germany')
 
 btn.addEventListener('click', function(e) {
-    fetchCountryData('portugall');
+    fetchCountryData('portugal');
 });
 
 
