@@ -290,3 +290,78 @@ function toMilitary(s) {
     console.log(mTime);
     return mTime;
 }
+
+/**
+ * Roman to integer my intial solution
+ * 
+ * @param {string} s
+ * @return {number}
+ */
+var romanToInt = function(s) {
+    const roman = {
+        'I': 1,
+        'V': 5,
+        'X': 10,
+        'L': 50,
+        'C': 100,
+        'D': 500,
+        'M': 1000,
+        'IV': 4,
+        'IX': 9,
+        'XL': 40,
+        'XC': 90,
+        'CD': 400,
+        'CM': 900,
+    }
+
+    let cur = '';
+    let int = 0;
+    for (let i = 0;i < s.length;i++) {
+        if (s[i] == 'I' || s[i] == 'X' || s[i] == 'C') {
+            cur = s[i] + s[i+1];
+            if (roman[cur]) {
+                int += roman[cur];
+                i += 1;
+                cur = '';
+            } else {
+                int += roman[s[i]];
+                cur = '';
+            }
+        } else {
+            int += roman[s[i]];
+        }
+    }
+
+    return int;
+
+};
+
+/**
+ * Romant to int better solution
+ * - go from right to left and if the current symbol has smaller value than the one, 
+ *  to its right, subtract the current value
+ */
+var romanToInt2 = function(s) {
+    const roman = {
+        'I': 1,
+        'V': 5,
+        'X': 10,
+        'L': 50,
+        'C': 100,
+        'D': 500,
+        'M': 1000
+    }
+
+    let result = 0;
+    for (let i = s.length-1;i >= 0;i--) {
+        let currValue = roman[s[i]];
+
+        if (i < s.length - 1 && currValue < roman[s[i+1]]) {
+            result -= currValue;
+        } else {
+            result += currValue;
+        }
+    }
+
+    return result;
+};
