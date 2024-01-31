@@ -155,3 +155,166 @@ function whereAmI(lat,lng) {
 }
 
 whereAmI(52.508,13.381);
+
+// testing callback queue
+console.log('test start'); // runs first
+setTimeout(() => console.log('0 sec timer'), 0); // runs fifth
+Promise.resolve('Resolves promise 1').then(res => console.log(res)); // runs third
+
+Promise.resolve('Resolved promise 2').then(res => { // runs fourth
+    for (let i = 0; i < 1000000000; i ++) {
+
+    }
+    console.log(res);
+});
+console.log('test end'); // runds second
+
+/**
+ * Promises
+ *  - promisifying - converting callback based async behavior to promise based
+ */
+console.log('-- promises --')
+const lottery = new Promise(function(resolve, reject) {
+
+    console.log('Lottery draw is starting...');
+
+    setTimeout(() => {
+        if (Math.random() >= 0.5) {
+            resolve('You WIN (:'); // passed on success/resolved
+        } else {
+            reject(new Error('You LOSE ):')); // passed on error/rejected
+        }
+    },2000)
+
+});
+
+// consume promise
+lottery
+    .then(res => console.log(res))
+    .catch(err => console.error(err));
+
+
+// promisifying settimeout function
+const wait = function(seconds) {
+    return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
+};
+
+wait(2).then(() => {
+    console.log('I waited 2 seconds');
+    return wait(1);
+}).then(() => console.log('I waited 1 second'));
+
+Promise.resolve('abc').then(x => console.log(x));
+Promise.reject(new Error('abc reject')).catch(x => console.error(x));
+
+/**
+ * Promisifying geolocation API
+ */
+// navigator.geolocation.getCurrentPosition(
+//     position => console.log(position), 
+//     err => console.error(err)
+// );
+// console.log('Getting position');
+
+const getPosition = function() {
+    return new Promise(function(resolve, reject) {
+        navigator.geolocation.getCurrentPosition(resolve, reject);
+    });
+}
+
+getPosition().then(res => console.log(res));
+
+const whereAmINow = function() {
+    getPosition().then(pos => {
+        const {latitude, longitude} = pos.coords;
+        
+        return fetch(`https://geocode.xyz/${latitude},${longitude}?geoit=json`)
+    })
+    .then(res => {
+        if (!res.ok) throw new Error(`Problem with geocoding ${res.status}`);
+        return res.json();
+    })
+    .then(data => {
+        console.log(data);
+        console.log(`You are in ${data.city}, ${data.country}`);
+
+        return fetch(`https://restcountries.com/v2/name/${data.country}`);
+    })
+    .then(res => {
+        if (!res.ok) throw new Error(`Country not found (${res.status})`);
+
+        return res.json();
+    })
+    .then(data => renderCountry(data[0]))
+    .catch(err => console.error(`${err.message}!!`));
+};
+
+btn.addEventListener('click', whereAmINow);
+
+
+///////////////////////////////////////
+// Coding Challenge #2
+
+/* 
+Build the image loading functionality that I just showed you on the screen.
+
+Tasks are not super-descriptive this time, so that you can figure out some stuff on your own. Pretend you're working on your own 😉
+
+PART 1
+1. Create a function 'createImage' which receives imgPath as an input. 
+This function returns a promise which creates a new image (use document.createElement('img')) and sets the .src attribute to the provided image path. 
+When the image is done loading, append it to the DOM element with the 'images' class, and resolve the promise. The fulfilled value should be the image element itself. 
+In case there is an error loading the image ('error' event), reject the promise.
+
+If this part is too tricky for you, just watch the first part of the solution.
+
+PART 2
+2. Comsume the promise using .then and also add an error handler;
+3. After the image has loaded, pause execution for 2 seconds using the wait function we created earlier;
+4. After the 2 seconds have passed, hide the current image (set display to 'none'), and load a second image (HINT: Use the image element returned by the createImage promise to hide the current image. 
+    You will need a global variable for that 😉);
+5. After the second image has loaded, pause execution for 2 seconds again;
+6. After the 2 seconds have passed, hide the current image.
+
+TEST DATA: Images in the img folder. Test the error handler by passing a wrong image path. Set the network speed to 'Fast 3G' in the dev tools Network tab, otherwise images load too fast.
+
+GOOD LUCK 😀
+*/
+
+const imgContainer = document.querySelector('.images');
+
+function createImage(imgPath) {
+    return new Promise(function(resolve, reject) {
+        let img = document.createElement('img');
+        img.src = imgPath;
+
+        img.addEventListener('load', function() {
+            imgContainer.append(img);
+            resolve(img);
+        })
+
+        img.addEventListener('error', function() {
+            reject(new Error('Img not found'));
+        })
+    });
+}
+
+let curImg;
+
+createImage("Mapty-architecture-final.png")
+    .then(res => {
+        curImg = res;
+        return wait(2);
+    })
+    .then(() => {
+        curImg.style.display = 'none';
+        return createImage('logo.png');
+    })
+    .then((res) => {
+        curImg = res;
+        return wait(2);
+    })
+    .then(() => {
+        curImg.style.display = 'none';
+    })
+    .catch(err => console.error(err))
