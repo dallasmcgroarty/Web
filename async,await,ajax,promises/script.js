@@ -154,7 +154,7 @@ function whereAmI(lat,lng) {
 
 }
 
-whereAmI(52.508,13.381);
+//whereAmI(52.508,13.381);
 
 // testing callback queue
 console.log('test start'); // runs first
@@ -222,7 +222,7 @@ const getPosition = function() {
     });
 }
 
-getPosition().then(res => console.log(res));
+//getPosition().then(res => console.log(res));
 
 const whereAmINow = function() {
     getPosition().then(pos => {
@@ -301,20 +301,220 @@ function createImage(imgPath) {
 
 let curImg;
 
-createImage("Mapty-architecture-final.png")
-    .then(res => {
-        curImg = res;
-        return wait(2);
-    })
-    .then(() => {
-        curImg.style.display = 'none';
-        return createImage('logo.png');
-    })
-    .then((res) => {
-        curImg = res;
-        return wait(2);
-    })
-    .then(() => {
-        curImg.style.display = 'none';
-    })
-    .catch(err => console.error(err))
+// createImage("Mapty-architecture-final.png")
+//     .then(res => {
+//         curImg = res;
+//         return wait(2);
+//     })
+//     .then(() => {
+//         curImg.style.display = 'none';
+//         return createImage('logo.png');
+//     })
+//     .then((res) => {
+//         curImg = res;
+//         return wait(2);
+//     })
+//     .then(() => {
+//         curImg.style.display = 'none';
+//     })
+//     .catch(err => console.error(err));
+
+
+/***
+ * Consuming promises with await/async
+ */
+
+const getPosition2 = function() {
+    return new Promise(function(resolve, reject) {
+        navigator.geolocation.getCurrentPosition(resolve, reject);
+    });
+}
+
+const whereAmI3 = async (country) => {
+    try {// geolocation
+        const pos = await getPosition2();
+        const { latitude, longitude } = pos.coords;
+
+        // reverse geocoding
+        const resGeo = await fetch(`https://geocode.xyz/${latitude},${longitude}?geoit=json`);
+        const dataGeo = await resGeo.json();
+        console.log(dataGeo);
+
+        // country data
+        const res = await fetch(`https://restcountries.com/v2/name/${dataGeo.country}`);
+        //console.log(res);
+        const data = await res.json();
+        //console.log(data);
+        //throw new Error('error fetching data');
+        //renderCountry(data[0]);
+
+        return `You are in ${dataGeo.city}, ${dataGeo.country}`;
+    } catch(err) {
+        console.log(err.message);
+
+        // reject promise returned from async function
+        throw err;
+    }
+}
+
+console.log('1: will get location');
+// const city = whereAmI3();
+// console.log(city);
+// whereAmI3()
+//     .then(city => console.log(city))
+//     .catch(err => console.error(err.message))
+//     .finally(() => console.log('finshed'));
+
+// (async () => {
+//     try {
+//         const city = await whereAmI3();
+//         console.log(`2. ${city}`);
+
+//     } catch (err) {
+//         console.error(err.message);
+//     }
+//     console.log('3. finished');
+// })();
+
+/**
+ * Promises in parallel
+ */
+
+const get3Countries = async (c1,c2,c3) => {
+    try {
+        // const [data1] = await getJSON(`https://restcountries.com/v2/name/${c1}`);
+        // const [data2] = await getJSON(`https://restcountries.com/v2/name/${c2}`);
+        // const [data3] = await getJSON(`https://restcountries.com/v2/name/${c3}`);
+
+        const res = await Promise.all([
+            getJSON(`https://restcountries.com/v2/name/${c1}`),
+            getJSON(`https://restcountries.com/v2/name/${c2}`),
+            getJSON(`https://restcountries.com/v2/name/${c3}`)
+        ]);
+
+        console.log(res.map(item => item[0].capital ));
+    } catch (err) {
+        console.error(err.message);
+    }
+}
+
+//get3Countries('portugal', 'canada', 'tanzania');
+
+/**
+ * More Promises
+ * - race
+ * - allSettled
+ * - any
+ */
+
+// promise.race
+// prevents against neverending promises or too long of promises
+(async () => {
+    const res = await Promise.race([
+        getJSON(`https://restcountries.com/v2/name/italy`),
+        getJSON(`https://restcountries.com/v2/name/egypt`),
+        getJSON(`https://restcountries.com/v2/name/mexico`)
+    ]);
+    console.log(res[0]);
+})();
+
+const timeout = (sec) => {
+    return new Promise((_, reject) => {
+        setTimeout(() => {
+            reject(new Error('request took too long'));
+        }, sec * 1000);
+    });
+}
+
+Promise.race([
+    getJSON(`https://restcountries.com/v2/name/tanzania`),
+    timeout(0.1)
+])
+    .then(res => console.log(res[0]))
+    .catch(err => console.log(err));
+
+// Promise.allSettled
+// return all results from promises even if on is rejected
+Promise.allSettled([
+    Promise.resolve('success'),
+    Promise.reject('ERROR'),
+    Promise.resolve('Another success'),
+])
+	.then(res => console.log(res));
+
+// Promise.all
+// shortcircuits if one promise fails
+Promise.all([
+    Promise.resolve('success'),
+    Promise.reject('ERROR'),
+    Promise.resolve('Another success'),
+])
+	.then(res => console.log(res))
+	.catch(err => console.log(err));
+
+// Promise.any
+// returns the first fulfilled promise
+Promise.any([
+	Promise.resolve('success if any'),
+	Promise.reject('ERROR'),
+	Promise.resolve('Another success'),
+])
+.then(res => console.log(res))
+.catch(err => console.log(err));
+
+///////////////////////////////////////
+// Coding Challenge #3
+
+/* 
+PART 1
+Write an async function 'loadNPause' that recreates Coding Challenge #2, this time using async/await (only the part where the promise is consumed). 
+Compare the two versions, think about the big differences, and see which one you like more.
+Don't forget to test the error handler, and to set the network speed to 'Fast 3G' in the dev tools Network tab.
+
+PART 2
+1. Create an async function 'loadAll' that receives an array of image paths 'imgArr';
+2. Use .map to loop over the array, to load all the images with the 'createImage' function (call the resulting array 'imgs')
+3. Check out the 'imgs' array in the console! Is it like you expected?
+4. Use a promise combinator function to actually get the images from the array 😉
+5. Add the 'paralell' class to all the images (it has some CSS styles).
+
+TEST DATA: ['img/img-1.jpg', 'img/img-2.jpg', 'img/img-3.jpg']. To test, turn off the 'loadNPause' function.
+
+GOOD LUCK 😀
+*/
+
+const loadNPause = async () => {
+	try {
+		// load image 1
+		let img = await createImage('Mapty-architecture-final.png')
+		console.log('loaded image 1');
+		await wait(2);
+		img.style.display = 'none';
+
+		// load image 2
+		img = await createImage('logo.png')
+		console.log('loaded image 2');
+		await wait(2);
+		img.style.display = 'none';
+	} catch(err) {
+		console.log(err);
+	}
+}
+
+//loadNPause();
+
+// part 2
+const loadAll = async (imgArr) => {
+	try {
+		const imgs = imgArr.map(async img => await createImage(img));
+		const imgsEl = await Promise.all(imgs);
+		console.log(imgsEl);
+		imgsEl.forEach((img) => {
+			img.classList.add('parallel')
+		})
+	} catch(err) {
+		console.log(err);
+	}
+}
+
+loadAll(['img/img-1.jpg','img/img-2.jpg','img/img-3.jpg'])

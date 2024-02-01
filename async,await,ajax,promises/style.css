@@ -47,6 +47,11 @@
     max-width: 100%;
     border-radius: 0.7rem;
     /* overflow: hidden; */
+    transition: all ease-in .3s;
+  }
+
+  .country:hover {
+    transform: scale(100.5%)
   }
   
   .neighbour::before {
