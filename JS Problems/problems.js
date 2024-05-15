@@ -392,3 +392,42 @@ var longestCommonPrefix = function(strs) {
 
     return prefix;
 };
+
+/** testing some code */
+console.log('testing some code');
+
+//
+// PART 1 - Strings
+// Using the var text... write each answer to console.log
+//
+
+const text = 'I am a master at strings';
+
+// 1 - Replace first occurence of 'a' with the letter z
+console.log('1: ' + text.replace('a', 'z'));
+
+// 2 - Replace all occurences of 'a' with the letter z
+console.log('2: ' + text.replaceAll('a', 'z'));
+
+// 3 - Print 0-based position of the first letter 'm'
+console.log('3: ' + text.indexOf('m'));
+
+//
+// PART 2 - Arrays
+// Using the var list... write each answer to console.log
+//
+
+const listy = [2, 6, 3, 7, 9];
+
+const sumOdd = (sum, a) => {
+  return a % 2 !== 0 ? sum + a : sum;
+};
+
+// 4 - Sum only the ODD numbers in the list
+console.log('4: ' + listy.reduce(sumOdd, 0));
+
+// 5 - Sort the list highest to lowest
+console.log('5: ' + listy.sort((a, b) => b - a));
+
+// 6 - Print the numbers in a ~ delimited string like '1~2~3'
+console.log('6: ' + listy.join('~'));
