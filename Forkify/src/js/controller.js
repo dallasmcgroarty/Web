@@ -2,6 +2,7 @@ import * as model from '../js/model';
 import RecipeView from './views/recipeView';
 import SearchView from './views/searchView';
 import ResultsView from './views/resultsView';
+import PaginationView from './views/paginationView';
 
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
@@ -9,6 +10,7 @@ import 'regenerator-runtime/runtime';
 const recipeView = new RecipeView();
 const searchView = new SearchView();
 const resultsView = new ResultsView();
+const paginationView = new PaginationView();
 
 if(module.hot) {
   module.hot.accept();
@@ -53,16 +55,25 @@ const controlSearchResults = async () => {
 
     await model.loadSearchResults(query);
 
-    resultsView.render(model.state.search.results);
+    resultsView.render(model.getSearchResultsPage());
+
+    // render initial pagination
+    paginationView.render(model.state.search);
   } catch (err) {
     recipeView.renderError(`Uh Oh! No results found!`)
   }
+}
+
+const controlPagination = (page=1) => {
+  resultsView.render(model.getSearchResultsPage(page));
+  paginationView.render(model.state.search);
 }
 
 const init = () => {
   recipeView.addHandlerRender(controlRecipes);
   searchView.addHandlerSearch(controlSearchResults);
   resultsView.addHandlerRender(controlSearchResults);
+  paginationView.addHandlerClick(controlPagination);
 };
 
 init();
