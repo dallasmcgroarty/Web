@@ -4,6 +4,15 @@ class View {
   _data;
 
   render(data) {
+    if (!this.verifyData(data)) {
+      return false;
+    }
+
+    this._clear();
+    this._parentElement.insertAdjacentHTML('afterbegin', this._generateMarkup());
+  }
+
+  verifyData(data) {
     if(!data || (Array.isArray(data) && data.length == 0)) return this.renderError();
 
     this._data = data;
@@ -13,8 +22,29 @@ class View {
       return false;
     }
 
-    this._clear();
-    this._parentElement.insertAdjacentHTML('afterbegin', this._generateMarkup());
+    return true;
+  }
+
+  update(data) {
+    this._data = data;
+
+    const newDom = document.createRange().createContextualFragment(this._generateMarkup());
+    const newElements = Array.from(newDom.querySelectorAll('*'));
+    const currentElements = Array.from(this._parentElement.querySelectorAll('*'));
+
+    newElements.forEach((newEl, i) => {
+      const curEl = currentElements[i];
+
+      // update changed text
+      if (!newEl.isEqualNode(curEl) && newEl.firstChild?.nodeValue.trim() !== '') {
+        curEl.textContent = newEl.textContent;
+      }
+
+      // update changed attributes
+      if (!newEl.isEqualNode(curEl)) {
+        Array.from(newEl.attributes).forEach(attr => curEl.setAttribute(attr.name, attr.value));
+      }
+    });
   }
 
   _clear() {
