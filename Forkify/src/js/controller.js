@@ -29,13 +29,14 @@ const controlRecipes = async function() {
 
     // 1.) loading recipe
     await model.loadRecipe(id);
+
     const { recipe } = model.state;
 
     //2.) render recipe
     const renderedRecipe = recipeView.render(recipe);
 
     if (!renderedRecipe) {
-      model.clearState();
+      //model.clearState();
     }
   } catch(err) {
     recipeView.renderError(`Uh Oh! That Recipe does not exist!`);
@@ -69,8 +70,17 @@ const controlPagination = (page=1) => {
   paginationView.render(model.state.search);
 }
 
+const controlServings = (newServings) => {
+  // update state
+  model.updateServings(newServings);
+
+  // update view
+  recipeView.render(model.state.recipe);
+};
+
 const init = () => {
   recipeView.addHandlerRender(controlRecipes);
+  recipeView.addHandlerUpdateServings(controlServings);
   searchView.addHandlerSearch(controlSearchResults);
   resultsView.addHandlerRender(controlSearchResults);
   paginationView.addHandlerClick(controlPagination);
