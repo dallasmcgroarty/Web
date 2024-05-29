@@ -2,7 +2,9 @@ import * as model from '../js/model';
 import RecipeView from './views/recipeView';
 import SearchView from './views/searchView';
 import ResultsView from './views/resultsView';
+import BookMarksView from './views/bookmarksView';
 import PaginationView from './views/paginationView';
+import AddRecipeView from './views/addRecipeView';
 
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
@@ -11,6 +13,8 @@ const recipeView = new RecipeView();
 const searchView = new SearchView();
 const resultsView = new ResultsView();
 const paginationView = new PaginationView();
+const bookmarksView = new BookMarksView();
+const addRecipeView = new AddRecipeView();
 
 if(module.hot) {
   module.hot.accept();
@@ -37,12 +41,14 @@ const controlRecipes = async function() {
 
     // 3.) update results view
     resultsView.update(model.getSearchResultsPage());
+    bookmarksView.update(model.state.bookmarks);
 
     if (!renderedRecipe) {
       //model.clearState();
     }
   } catch(err) {
     recipeView.renderError(`Uh Oh! That Recipe does not exist!`);
+    console.error(err);
   }
 };
 
@@ -92,15 +98,33 @@ const controlAddBookmark = () => {
   }
 
   recipeView.update(model.state.recipe);
+
+  bookmarksView.render(model.state.bookmarks);
+}
+
+const controlBookmarks = () => {
+  bookmarksView.render(model.state.bookmarks);
+}
+
+const controlAddRecipe = async (newRecipe) => {
+  try {
+
+    await model.uploadRecipe(newRecipe);
+  } catch(err) {
+    console.error(err);
+    addRecipeView.renderError(err.message)
+  }
 }
 
 const init = () => {
+  bookmarksView.addHandlerRender(controlBookmarks);
   recipeView.addHandlerRender(controlRecipes);
   recipeView.addHandlerUpdateServings(controlServings);
   recipeView.addHandlerAddBookmark(controlAddBookmark);
   searchView.addHandlerSearch(controlSearchResults);
   resultsView.addHandlerRender(controlSearchResults);
   paginationView.addHandlerClick(controlPagination);
+  addRecipeView.addHandlerUpload(controlAddRecipe);
 };
 
 init();

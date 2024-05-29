@@ -3,9 +3,13 @@ import icons from 'url:../../img/icons.svg';
 class View {
   _data;
 
-  render(data) {
+  render(data, render=true) {
     if (!this.verifyData(data)) {
       return false;
+    }
+
+    if(!render) {
+      return this._generateMarkup();
     }
 
     this._clear();
