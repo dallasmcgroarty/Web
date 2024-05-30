@@ -71,7 +71,7 @@ class View {
     this._parentElement.insertAdjacentHTML('afterbegin', markup);
   }
 
-  renderMessage = (msg) => {
+  renderMessage = (msg=this._message) => {
     const markup = `<div class="error">
       <div>
         <svg>

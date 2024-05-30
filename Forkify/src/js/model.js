@@ -1,6 +1,6 @@
 import { async } from 'regenerator-runtime';
-import { API_URL, RESULTS_PER_PAGE } from './config';
-import { getJSON } from './helpers';
+import { API_URL, RESULTS_PER_PAGE, API_KEY } from './config';
+import { getJSON, sendJSON } from './helpers';
 
 export const state = {
   recipe: {},
@@ -15,10 +15,13 @@ export const state = {
 
 export const loadRecipe = async (id) => {
   try {
-    const data = await getJSON(`${API_URL}/${id}`);
+    const data = await getJSON(`${API_URL}/${id}?key=${API_KEY}`);
 
     const { recipe } = data.data;
     state.recipe = recipe;
+    // if (!state.recipe.hasOwnProperty('key')) {
+    //   state.recipe.key = `${API_KEY}`;
+    // }
 
     if(state.bookmarks.some(b => b.id === state.recipe.id)) {
       state.recipe.bookmarked = true;
@@ -38,7 +41,7 @@ export const clearState = () => {
 
 export const loadSearchResults = async (query) => {
   try {
-    const data = await getJSON(`${API_URL}?search=${query}`);
+    const data = await getJSON(`${API_URL}?search=${query}&key=${API_KEY}`);
 
     state.search.query = query;
     state.search.results = data.data.recipes.map(rec => {
@@ -109,21 +112,21 @@ init();
 
 export const uploadRecipe = async (newRecipe) => {
   try {
-    console.log(Object.entries(newRecipe));
-    const ingredients = Object.entries(newRecipe)
-    .filter(entry => entry[0].includes('ingredient') && entry[1] !== '')
-    .map(entry => {
-      const ingArr = entry[1].split(',');
-  
-      if(ingArr.length !== 3) {
-        throw new Error('Wrong ingredient format!');
-      }
-  
-      const [quantity, unit, description] = ingArr;
-      return {quantity: quantity ? Number(quantity) : null, unit, description};
-    })
 
-    const recipe = {
+    const ingredients = Object.entries(newRecipe)
+      .filter(entry => entry[0].includes('ingredient') && entry[1] !== '')
+      .map(entry => {
+        const ingArr = entry[1].split(',').map(el => el.trim());
+    
+        if(ingArr.length !== 3) {
+          throw new Error('Wrong ingredient format!');
+        }
+    
+        const [quantity, unit, description] = ingArr;
+        return {quantity: quantity ? Number(quantity) : null, unit, description};
+      })
+
+    const recipeObj = {
       title: newRecipe.title,
       source_url: newRecipe.sourceUrl,
       image_url: newRecipe.image,
@@ -133,7 +136,11 @@ export const uploadRecipe = async (newRecipe) => {
       ingredients
     };
   
-    console.log(recipe);
+    const data = await sendJSON(`${API_URL}?key=${API_KEY}`, recipeObj);
+
+    const { recipe } = data.data;
+    state.recipe = recipe;
+    addBookmark(state.recipe);
   } catch(err) {
     throw err;
   }
