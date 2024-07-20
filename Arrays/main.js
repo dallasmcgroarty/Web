@@ -580,3 +580,19 @@ console.log(dogsEatingOkay);
 // 8.
 const dogsCopy = [...dogs].sort((a, b) => a.recommendedFood - b.recommendedFood);
 console.log(dogsCopy);
+
+function reverseNumber(number) {
+    const numString = String(number).split('');
+    console.log(String(number).split(''))
+    const reversedString = numString.reverse();
+    
+    const reversedNumber = parseInt(reversedString.join(''), 10);
+    return reversedNumber;
+}
+console.log(reverseNumber(987654321));
+
+function oppositeNumber(number) {
+    return -number;
+}
+
+console.log(oppositeNumber(5))

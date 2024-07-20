@@ -3,6 +3,7 @@ import { API_URL, RESULTS_PER_PAGE, API_KEY } from './config';
 import { getJSON, sendJSON } from './helpers';
 
 export const state = {
+  recipeList: [],
   recipe: {},
   search: {
     query: '',

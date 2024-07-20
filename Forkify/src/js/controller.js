@@ -53,6 +53,10 @@ const controlRecipes = async function() {
   }
 };
 
+const controlAllRecipes = async () => {
+  await model.getAllRecipes();
+}
+
 const controlSearchResults = async () => {
   try {
     resultsView.renderSpinner();
@@ -133,6 +137,7 @@ const controlAddRecipe = async (newRecipe) => {
 }
 
 const init = () => {
+  controlAllRecipes();
   bookmarksView.addHandlerRender(controlBookmarks);
   recipeView.addHandlerRender(controlRecipes);
   recipeView.addHandlerUpdateServings(controlServings);
